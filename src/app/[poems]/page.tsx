@@ -25,7 +25,7 @@ export default function PoemPage() {
   const fetchPoem = async () => {
     const response = await fetch("/api/poem");
     const data = await response.json();
-    setPoetry(data);
+    setPoetry(data[0]);
   };
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function PoemPage() {
   }, []);
 
   useEffect(() => {
-    () => {
+    const filterPoetry = () => {
       const cont = poetry?.content;
       const arrayPushable: Array<String> = [];
       cont?.forEach((element) => {
@@ -44,16 +44,29 @@ export default function PoemPage() {
       });
       setContent(arrayPushable);
     };
-  }, [poetry?.content]);
+    filterPoetry();
+  }, [poetry]);
 
   return (
     <>
       <Header />
       <NavBarPoem />
-      {content.map((e) => {
-        const stringed = `${e} <br/>`;
-        return parse(stringed);
-      })}
+      <h2 className="text-xl text-center my-10 underline">
+        {poetry?.data.title}
+      </h2>
+      <div className="w-full flex justify-center">
+        <div>
+          <p className="text-center">
+            {content.map((e) => {
+              const stringed = `${e} <br/>`;
+              return parse(stringed);
+            })}
+          </p>
+          <p className="text-right text-slate-200">
+            {poetry?.data.poet}, {poetry?.data.year}
+          </p>
+        </div>
+      </div>
     </>
   );
 }
